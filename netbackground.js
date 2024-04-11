@@ -9,6 +9,7 @@ ctx.canvas.height = window.innerHeight;
 let points = [];
 // milliseconds
 tickrate = 15;
+maxrange = 200;
 
 function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
@@ -61,41 +62,47 @@ function newObject() {
 				this.info.angle = randomNumber(91, 269);
 				break;
 		}
-		this.info.speed = randomNumber(20, 200);
-		// magical regression sauce that scales radius from 1 to 2 based on speed (20 to 200)
-		this.info.radius = 0.00555556 * this.info.speed + 0.888889;
+		this.info.speed = randomNumber(10, 200);
+		// magical regression sauce that scales radius from 0.5 to 1 based on speed (15 to 50)
+		this.info.radius = 0.00606061 * this.info.speed + 0.239394;
 	}
 
 	this.draw = function() {
         ctx.beginPath();
-        ctx.arc(this.ctx_array[0], this.ctx_array[1], this.info.radius, 0, 2*Math.PI, false);
-        ctx.lineWidth = 5;
-        ctx.fillStyle = "rgb(183, 183, 183)";
-        ctx.fill();
-        ctx.strokeStyle = "rgb(183, 183, 183)";
+        ctx.arc(this.info.x, this.info.y, this.info.radius, 0, 2*Math.PI, false);
+        ctx.lineWidth = this.info.radius * 2;
+        ctx.fillStyle = "rgb(162, 162, 163)";
+        ctx.strokeStyle = "rgb(162, 162, 163)";
         ctx.stroke();
+		ctx.fill();
     }
 
 	this.update = function() {
+		// set out of bounds to add maxrange to improve smoothness
+		if (this.info.x > width + maxrange || this.info.x < 0 - maxrange || this.info.y > height + maxrange || this.info.y < 0 - maxrange) {
+			this.reset()
+		}
+		// ticks per second
+		let tps = tickrate / 1000
 		// Man idk what i'm doing idk trig
 		if (0 <= this.info.angle && 90 > this.info.angle) {
 			// neg y pos x
-			this.info.x += this.info.speed * Math.cos(Math.abs(this.info.angle);
-			this.info.y += -this.info.speed * Math.sin(Math.abs(this.info.angle);
+			this.info.x += (this.info.speed * Math.cos(Math.abs(this.info.angle))) * tps;
+			this.info.y += (-this.info.speed * Math.sin(Math.abs(this.info.angle))) * tps;
 		} else if (90 <= this.info.angle && 180 > this.info.angle) {
 			// pos y pos x
-            		this.info.x += this.info.speed * Math.cos(Math.abs(this.info.angle);
-			this.info.y += this.info.speed * Math.sin(Math.abs(this.info.angle);
+			this.info.x += (this.info.speed * Math.cos(Math.abs(this.info.angle))) * tps;
+			this.info.y += (this.info.speed * Math.sin(Math.abs(this.info.angle))) * tps;
 		} else if (180 <= this.info.angle && 270 > this.info.angle) {
 			// pos y neg x
-            		this.info.x += -this.info.speed * Math.cos(Math.abs(this.info.angle);
-			this.info.y += this.info.speed * Math.sin(Math.abs(this.info.angle);
+			this.info.x += (-this.info.speed * Math.cos(Math.abs(this.info.angle))) * tps;
+			this.info.y += (this.info.speed * Math.sin(Math.abs(this.info.angle))) * tps;
 		} else if (270 <= this.info.angle && 360 >= this.info.angle) {
 			// neg y neg x
-          		this.info.x += -this.info.speed * Math.cos(Math.abs(this.info.angle);
-			this.info.y += -this.info.speed * Math.sin(Math.abs(this.info.angle);
+          	this.info.x += (-this.info.speed * Math.cos(Math.abs(this.info.angle))) * tps;
+			this.info.y += (-this.info.speed * Math.sin(Math.abs(this.info.angle))) * tps;
 		}
-
+	}
 
 }
 
@@ -108,11 +115,16 @@ function background() {
     ctx.fill();
 };
 
+for (i = 0; i<150; i++) {
+    points[i] = new newObject();
+	points[i].reset();
+}
+
 setInterval(function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     background();
-    /* points.forEach(function(b) {
-        b.updatePos();
+   	points.forEach(function(b) {
+        b.update();
         b.draw();
-    }); */
+    });
 }, 15);
