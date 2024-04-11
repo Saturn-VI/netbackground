@@ -19,34 +19,43 @@ function newObject() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	this.info = [];
 	this.neightbors = [];
+	let x = 0;
+	let y = 0;
 	// starting location of dot
 	this.reset = function() {
-		switch(Math.round(randomNumber(1, 4)) {
+		switch (Math.round(randomNumber(1, 4))) {
 			case 1:
-				let x = 0;
-				let y = randomNumber(0, height);
+				x = 0;
+				y = randomNumber(0, height);
 				this.info.x = x;
 				this.info.y = y;
 				this.info.angle = randomNumber(1, 179);
 				break;
 			case 2:
-				let x = randomNumber(0, width);
-				let y = height;
+				x = randomNumber(0, width);
+				y = height;
 				this.info.x = x;
 				this.info.y = y;
 				// for bottom side
-				switch(Math.round(randomNumber(1, 2)) { case 1: this.info.angle = randomNumber(271, 359); break; case 2: this.info.angle = randomNumber(0, 89); break; }
+				switch (Math.round(randomNumber(1, 2))) {
+					case 1:
+						this.info.angle = randomNumber(271, 359);
+						break;
+					case 2:
+						this.info.angle = randomNumber(0, 89);
+						break;
+				};
 				break;
 			case 3:
-				let x = width;
-				let y = randomNumber(0, height);
+				x = width;
+				y = randomNumber(0, height);
 				this.info.x = x;
 				this.info.y = y;
 				this.info.angle = randomNumber(181, 359);
 				break;
 			case 4:
-				let x = randomNumber(0, width);
-				let y = 0;
+				x = randomNumber(0, width);
+				y = 0;
 				this.info.x = x;
 				this.info.y = y;
 				this.info.angle = randomNumber(91, 269);
