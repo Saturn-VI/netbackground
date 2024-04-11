@@ -68,7 +68,26 @@ function newObject() {
     }
 
 	this.update = function() {
-		this.x = 
+		// Man idk what i'm doing idk trig
+		if (0 <= this.info.angle && 90 > this.info.angle) {
+			// neg y pos x
+			this.info.x = this.info.speed * Math.cos(Math.abs(this.info.angle);
+			this.info.y = -this.info.speed * Math.sin(Math.abs(this.info.angle);
+		} else if (90 <= this.info.angle && 180 > this.info.angle) {
+			// pos y pos x
+            this.info.x = this.info.speed * Math.cos(Math.abs(this.info.angle);
+			this.info.y = this.info.speed * Math.sin(Math.abs(this.info.angle);
+		} else if (180 <= this.info.angle && 270 > this.info.angle) {
+			// pos y neg x
+            this.info.x = -this.info.speed * Math.cos(Math.abs(this.info.angle);
+			this.info.y = this.info.speed * Math.sin(Math.abs(this.info.angle);
+		} else if (270 <= this.info.angle && 360 >= this.info.angle) {
+			// neg y neg x
+            this.info.x = -this.info.speed * Math.cos(Math.abs(this.info.angle);
+			this.info.y = -this.info.speed * Math.sin(Math.abs(this.info.angle);
+		}
+
+
 }
 
 function background() {
