@@ -62,8 +62,9 @@ function newObject() {
 				this.info.angle = randomNumber(91, 269);
 				break;
 		}
-		this.info.speed = randomNumber(10, 200);
-		// magical regression sauce that scales radius from 0.5 to 1 based on speed (15 to 50)
+		// speed stuff is defined here, radius is a linear regression that has minimum/maximum speed as x and desired radius as y
+		this.info.speed = randomNumber(10, 175);
+		// magical regression sauce that scales radius from 0.3 to 1.3 based on speed (10 to 175)
 		this.info.radius = 0.00606061 * this.info.speed + 0.239394;
 	}
 
@@ -71,6 +72,7 @@ function newObject() {
         ctx.beginPath();
         ctx.arc(this.info.x, this.info.y, this.info.radius, 0, 2*Math.PI, false);
         ctx.lineWidth = this.info.radius * 2;
+		ctx.globalAlpha = 1;
         ctx.fillStyle = "rgb(162, 162, 163)";
         ctx.strokeStyle = "rgb(162, 162, 163)";
         ctx.stroke();
@@ -79,7 +81,7 @@ function newObject() {
 
 	this.update = function() {
 		// set out of bounds to add maxrange to improve smoothness
-		if (this.info.x > width + maxrange || this.info.x < 0 - maxrange || this.info.y > height + maxrange || this.info.y < 0 - maxrange) {
+		if (this.info.x > width + 20 || this.info.x < 0 - 20 || this.info.y > height + 20 || this.info.y < 0 - 20) {
 			this.reset()
 		}
 		// ticks per second
@@ -104,6 +106,22 @@ function newObject() {
 		}
 	}
 
+	this.net = function() {
+		let initx = this.info.x;
+		let inity = this.info.y;
+		points.forEach(function(c){
+			let dist =  Math.sqrt((Math.abs(initx) - Math.abs(c.info.x)) ** 2 + (Math.abs(inity) - Math.abs(c.info.y)) ** 2);
+			if (dist < maxrange) {
+				ctx.beginPath();
+				ctx.lineWidth = 0.5;
+				ctx.strokeStyle = "rgb(162, 162, 163)";
+				ctx.globalAlpha = Math.max(0, Math.min(1, (-0.00606061 * dist + 1.06061)));
+				ctx.moveTo(initx, inity);
+				ctx.lineTo(c.info.x, c.info.y);
+				ctx.stroke();
+			}
+		});
+	}
 }
 
 function background() {
@@ -127,4 +145,8 @@ setInterval(function() {
         b.update();
         b.draw();
     });
+	// for the actual lines
+	points.forEach(function(d) {
+		d.net()
+	});
 }, 15);
