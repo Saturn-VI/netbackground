@@ -21,12 +21,22 @@ ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 ctx.canvas.style.background = "rgb(27, 27, 30)";
 let points = [];
-// milliseconds
-tickrate = 15;
-maxrange = 150;
-pointcount = 325;
+// scales points to scale based on pixels on screen
+pointcount = Math.round((screen.availHeight * screen.availWidth) * 75 / 727184);
 let mouseX = 0;
 let mouseY = 0;
+
+// customizable values
+// in ms
+tickrate = 15;
+// max line draw distance (pixels)
+maxrange = 100;
+// set speed (pixels / second)
+maxspeed = 115;
+minspeed = 15;
+// set radius (pixels)
+maxradius = 1.3;
+minradius = 0.3;
 
 function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
@@ -54,9 +64,9 @@ function newObject() {
 		this.info.angle = randomNumber(1, 360);
 
 		// speed stuff is defined here, radius is a linear regression that has minimum/maximum speed as x and desired radius as y
-        	this.info.speed = randomNumber(30, 200);
-        	// magical regression sauce that scales radius from 0.3 to 1.3 based on speed (20 to 175)
-        	this.info.radius = 0.00774194 * this.info.speed - 0.0548387;
+		this.info.speed = randomNumber(minspeed, maxspeed);
+		// magical sauce that scales radius linearly based on speed;
+		this.info.radius = (maxradius - minradius) * ((this.info.speed - minspeed) / (maxspeed - minspeed)) + minradius;
 	}
 
 	this.draw = function() {
@@ -104,7 +114,7 @@ function newObject() {
 		points[pointcount].info.y = mouseY;
 		points.forEach(function(c, index){
 			let dist =  Math.sqrt((Math.abs(initx) - Math.abs(c.info.x)) ** 2 + (Math.abs(inity) - Math.abs(c.info.y)) ** 2);
-			if (dist < maxrange) {
+			if (dist < maxrange || (index == pointcount && dist < maxrange + 0.5)) {
 				ctx.beginPath();
 				ctx.lineWidth = 0.2;
 				ctx.strokeStyle = "rgb(254, 254, 255)";
@@ -119,9 +129,6 @@ function newObject() {
 				ctx.stroke();
 			}
 		});
-
-		// this part adds the mouse and I don't want to deal with adding it to the array of points
-		// TODO: deal with it (add as final element of array by setting
 	}
 }
 

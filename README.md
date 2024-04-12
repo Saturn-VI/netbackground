@@ -6,7 +6,7 @@ it mostly just looks fancy
 - it treats your cursor as a point and makes it stronger (pretty much a given)
 - you can sort of change the variables at the start, but then the regressions need to be re-calculated
 - particles spawn at the cursor when mouse is clicked
+- automatic regressions
+- somewhat well done points per screen size
 
 ## todo
-- making the regressions automatic
-- automatically calculating correct amount of points for screen size
