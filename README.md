@@ -9,3 +9,4 @@ it mostly just looks fancy
 
 ## todo
 - making the regressions automatic
+- automatically calculating correct amount of points for screen size
