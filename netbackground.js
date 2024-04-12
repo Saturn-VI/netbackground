@@ -54,9 +54,9 @@ function newObject() {
 		this.info.angle = randomNumber(1, 360);
 
 		// speed stuff is defined here, radius is a linear regression that has minimum/maximum speed as x and desired radius as y
-        this.info.speed = randomNumber(30, 200);
-        // magical regression sauce that scales radius from 0.3 to 1.3 based on speed (20 to 175)
-        this.info.radius = 0.00774194 * this.info.speed - 0.0548387;
+        	this.info.speed = randomNumber(30, 200);
+        	// magical regression sauce that scales radius from 0.3 to 1.3 based on speed (20 to 175)
+        	this.info.radius = 0.00774194 * this.info.speed - 0.0548387;
 	}
 
 	this.draw = function() {
