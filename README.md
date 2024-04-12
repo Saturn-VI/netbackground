@@ -10,3 +10,6 @@ it mostly just looks fancy
 - somewhat well done points per screen size
 
 ## todo
+- scale maxrange to screen size
+- scale basically everything
+- fix mouse distance to points when drawing net
