@@ -5,8 +5,7 @@ it mostly just looks fancy
 - it automatically styles and sets up a container with id 'background-container'
 - it treats your cursor as a point and makes it stronger (pretty much a given)
 - you can sort of change the variables at the start, but then the regressions need to be re-calculated
+- particles spawn at the cursor when mouse is clicked
 
 ## todo
 - making the regressions automatic
-- fix the flash that happens when page is resized (low priority)
-- make more particles spawn at mouse when clicked
