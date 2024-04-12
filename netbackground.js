@@ -1,3 +1,16 @@
+// spaghetthi that sets up page
+container = document.getElementById("background-container");
+canv = document.createElement("canvas");
+canv.id = "background-canvas";
+container.appendChild(canv);
+container.style.height = "100%";
+container.style.width = "100%";
+container.style.margin = "0";
+container.style.overflow = "hidden";
+container.style.position = "fixed";
+container.style.top = "0";
+container.style.left = "0";
+
 const canvas = document.getElementById("background-canvas");
 
 let width = window.screen.width;
@@ -10,9 +23,20 @@ let points = [];
 // milliseconds
 tickrate = 15;
 maxrange = 200;
+pointcount = 400;
+let mouseX = 0;
+let mouseY = 0;
 
 function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
+};
+
+onresize = (event) => {
+	width = window.screen.width;
+	height = window.screen.height;
+	center = (width/2, height/2);
+	ctx.canvas.width = window.innerWidth;
+	ctx.canvas.height = window.innerHeight;
 };
 
 function newObject() {
@@ -23,6 +47,18 @@ function newObject() {
 	let x = 0;
 	let y = 0;
 	// starting location of dot
+	this.initpoint = function() {
+		this.info.x = randomNumber(0, width);
+		this.info.y = randomNumber(0, height);
+		// i know this line will have like slightly more going straight up but i Do Not Care
+		this.info.angle = randomNumber(1, 360);
+
+		// speed stuff is defined here, radius is a linear regression that has minimum/maximum speed as x and desired radius as y
+        this.info.speed = randomNumber(10, 175);
+        // magical regression sauce that scales radius from 0.3 to 1.3 based on speed (10 to 175)
+        this.info.radius = 0.00606061 * this.info.speed + 0.239394;
+	}
+
 	this.reset = function() {
 		switch (Math.round(randomNumber(1, 4))) {
 			case 1:
@@ -81,8 +117,8 @@ function newObject() {
 
 	this.update = function() {
 		// set out of bounds to add maxrange to improve smoothness
-		if (this.info.x > width + 20 || this.info.x < 0 - 20 || this.info.y > height + 20 || this.info.y < 0 - 20) {
-			this.reset()
+		if (this.info.x > width + maxrange / 2 || this.info.x < 0 - maxrange / 2 || this.info.y > height + maxrange / 2 || this.info.y < 0 - maxrange / 2) {
+			this.initpoint()
 		}
 		// ticks per second
 		let tps = tickrate / 1000
@@ -109,18 +145,28 @@ function newObject() {
 	this.net = function() {
 		let initx = this.info.x;
 		let inity = this.info.y;
-		points.forEach(function(c){
+		points[pointcount].info.x = mouseX;
+		points[pointcount].info.y = mouseY;
+		points.forEach(function(c, index){
 			let dist =  Math.sqrt((Math.abs(initx) - Math.abs(c.info.x)) ** 2 + (Math.abs(inity) - Math.abs(c.info.y)) ** 2);
 			if (dist < maxrange) {
 				ctx.beginPath();
 				ctx.lineWidth = 0.5;
 				ctx.strokeStyle = "rgb(162, 162, 163)";
-				ctx.globalAlpha = Math.max(0, Math.min(1, (-0.00606061 * dist + 1.06061)));
+				// makes the cursor's lines more opaque
+				let preDefAlpha = -0.00606061 * dist + 1.06061
+				if (index == pointcount) {
+					preDefAlpha += 0.3;
+				};
+				ctx.globalAlpha = Math.max(0, Math.min(1, (preDefAlpha)));
 				ctx.moveTo(initx, inity);
 				ctx.lineTo(c.info.x, c.info.y);
 				ctx.stroke();
 			}
 		});
+
+		// this part adds the mouse and I don't want to deal with adding it to the array of points
+		// TODO: deal with it (add as final element of array by setting
 	}
 }
 
@@ -133,10 +179,21 @@ function background() {
     ctx.fill();
 };
 
-for (i = 0; i<150; i++) {
+for (i = 0; i<200; i++) {
     points[i] = new newObject();
-	points[i].reset();
+	points[i].initpoint();
 }
+
+// handles with treating mouse as a point
+document.addEventListener("mousemove", logKey);
+function logKey(e) {
+	mouseX = e.clientX;
+	mouseY = e.clientY;
+}
+	
+points[pointcount] = new newObject();
+points[pointcount].info.x = mouseX;
+points[pointcount].info.y = mouseY;
 
 setInterval(function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
