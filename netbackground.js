@@ -22,21 +22,23 @@ ctx.canvas.height = window.innerHeight;
 ctx.canvas.style.background = "rgb(27, 27, 30)";
 let points = [];
 // scales points to scale based on pixels on screen
-pointcount = Math.round((screen.availHeight * screen.availWidth) * 75 / 727184);
+let pointcount = Math.round((screen.availHeight * screen.availWidth) * 75 / 727184);
 let mouseX = 0;
 let mouseY = 0;
 
 // customizable values
 // in ms
-tickrate = 15;
-// max line draw distance (pixels)
-maxrange = 100;
+let tickrate = 15;
 // set speed (pixels / second)
-maxspeed = 115;
-minspeed = 15;
+let maxspeed = 115;
+let minspeed = 15;
+// max line draw distance (pixels)
+// only set integer, other math is to scale to speed
+// cursor draws lines an additional 1.5x this range
+let maxrange = (maxspeed - minspeed) + 0;
 // set radius (pixels)
-maxradius = 1.3;
-minradius = 0.3;
+let maxradius = 1.3;
+let minradius = 0.3;
 
 function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
@@ -60,7 +62,6 @@ function newObject() {
 	this.initpoint = function() {
 		this.info.x = randomNumber(0, width);
 		this.info.y = randomNumber(0, height);
-		// i know this line will have like slightly more going straight up but i Do Not Care
 		this.info.angle = randomNumber(1, 360);
 
 		// speed stuff is defined here, radius is a linear regression that has minimum/maximum speed as x and desired radius as y
@@ -114,12 +115,12 @@ function newObject() {
 		points[pointcount].info.y = mouseY;
 		points.forEach(function(c, index){
 			let dist =  Math.sqrt((Math.abs(initx) - Math.abs(c.info.x)) ** 2 + (Math.abs(inity) - Math.abs(c.info.y)) ** 2);
-			if (dist < maxrange || (index == pointcount && dist < maxrange + 0.5)) {
+			if (dist <=  maxrange || (index == pointcount && dist <= 1.5 * maxrange)) {
 				ctx.beginPath();
 				ctx.lineWidth = 0.2;
 				ctx.strokeStyle = "rgb(254, 254, 255)";
 				// makes the cursor's lines more opaque
-				let preDefAlpha = -0.00666667 * dist + 1
+				let preDefAlpha = -(dist / maxrange) + 1
 				if (index == pointcount) {
 					preDefAlpha += 0.5;
 				};
