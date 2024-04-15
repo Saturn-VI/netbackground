@@ -22,7 +22,8 @@ ctx.canvas.height = window.innerHeight;
 ctx.canvas.style.background = "rgb(27, 27, 30)";
 let points = [];
 // scales points to scale based on pixels on screen
-let pointcount = Math.round((screen.availHeight * screen.availWidth) * 75 / 727184);
+let pointcount = 0.0000614154 * ((window.screen.height + window.screen.width) ** 2) - 0.633641 * (window.screen.height + window.screen.width) + 61.3282
+// let pointcount = Math.round((screen.availHeight * screen.availWidth) * 75 / 727184);
 let mouseX = 0;
 let mouseY = 0;
 
@@ -35,7 +36,8 @@ let minspeed = 15;
 // max line draw distance (pixels)
 // only set integer, other math is to scale to speed
 // cursor draws lines an additional 1.5x this range
-let maxrange = (maxspeed - minspeed) + 0;
+// above comments irrelevant, now scales 10% of smallest screen dimension
+window.screen.height < window.screen.width ? let maxrange = window.screen.height / 10 : let maxrange = window.screen.width / 10;
 // set radius (pixels)
 let maxradius = 1.3;
 let minradius = 0.3;
