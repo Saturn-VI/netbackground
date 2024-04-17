@@ -22,7 +22,7 @@ ctx.canvas.height = window.innerHeight;
 ctx.canvas.style.background = "rgb(27, 27, 30)";
 let points = [];
 // scales points to scale based on pixels on screen
-let pointcount = 0.00000027099 * (((window.screen.height + window.screen.width) / 2) ** 3) - 0.000592946 * (((window.screen.height + window.screen.width) / 2) ** 2) + 0.331089 * ((window.screen.height + window.screen.width) / 2) - 0.674036
+let pointcount = Math.round(0.00000027099 * (((window.screen.height + window.screen.width) / 2) ** 3) - 0.000592946 * (((window.screen.height + window.screen.width) / 2) ** 2) + 0.331089 * ((window.screen.height + window.screen.width) / 2) - 0.674036)
 // let pointcount = Math.round((screen.availHeight * screen.availWidth) * 75 / 727184);
 let mouseX = 0;
 let mouseY = 0;
