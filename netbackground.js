@@ -22,8 +22,10 @@ ctx.canvas.height = window.innerHeight;
 ctx.canvas.style.background = "rgb(27, 27, 30)";
 let points = [];
 // scales points to scale based on pixels on screen
-let pointcount = Math.round(0.00000027099 * (((window.screen.height + window.screen.width) / 2) ** 3) - 0.000592946 * (((window.screen.height + window.screen.width) / 2) ** 2) + 0.331089 * ((window.screen.height + window.screen.width) / 2) - 0.674036)
-// let pointcount = Math.round((screen.availHeight * screen.availWidth) * 75 / 727184);
+// stops working after around 5000
+// i'm starting to think that this should have just been square or linear
+// https://www.desmos.com/calculator/osywnwrize
+let pointcount = Math.round(-0.000000049801 * (((window.screen.height + window.screen.width) / 2) ** 3) + 0.000283441 * (((window.screen.height + window.screen.width) / 2) ** 2) - 0.0611136 * ((window.screen.height + window.screen.width) / 2) + 1.82922);
 let mouseX = 0;
 let mouseY = 0;
 
