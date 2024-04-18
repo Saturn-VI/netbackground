@@ -6,8 +6,7 @@ it mostly just looks fancy
 - it treats your cursor as a point and makes it stronger (pretty much a given)
 - you can sort of change the variables at the start, but then the regressions need to be re-calculated
 - particles spawn at the cursor when mouse is clicked
-- somewhat well done scaling
+- number of points, maximum draw range, and (kind of) speed
 
 ## todo
-- scale maxrange to screen size (now it scales to speed of points)
-- scale basically everything
+- scale radius
