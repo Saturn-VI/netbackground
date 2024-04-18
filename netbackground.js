@@ -21,6 +21,7 @@ ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 ctx.canvas.style.background = "rgb(27, 27, 30)";
 let points = [];
+
 // scales points to scale based on pixels on screen
 // stops working after around 5000
 // i'm starting to think that this should have just been square or linear
@@ -32,14 +33,15 @@ let mouseY = 0;
 // customizable values
 // in ms
 let tickrate = 15;
-// set speed (pixels / second)
-let maxspeed = 115;
-let minspeed = 15;
 // max line draw distance (pixels)
 // only set integer, other math is to scale to speed
 // cursor draws lines an additional 1.5x this range
 // above comments irrelevant, now scales 10% of smallest screen dimension
 let maxrange = (window.screen.height < window.screen.width) ? window.screen.height / 10 : window.screen.width / 10;
+// set speed (pixels / second)
+let speedfactor = 15;
+let maxspeed = Math.floor(maxrange) + speedfactor;
+let minspeed = speedfactor;
 // set radius (pixels)
 let maxradius = 1.3;
 let minradius = 0.3;
