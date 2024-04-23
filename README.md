@@ -11,3 +11,8 @@ it ~~mostly~~ just looks fancy
 ## todo
 - make alpha curve reverse logarithmic
 - fix the lines and circles so they aren't so blurry (top priority)
+
+## running
+```
+$ node server
+```
