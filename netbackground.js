@@ -37,12 +37,11 @@ let tickrate = 15;
 // only set integer, other math is to scale to speed
 // cursor draws lines an additional 1.5x this range
 // above comments irrelevant, now scales 10% of smallest screen dimension
-//let maxrange = (window.screen.height < window.screen.width) ? window.screen.height / 10 : window.screen.width / 10;
 let maxrange = (window.screen.height + window.screen.width) / 30;
 // set speed (pixels / second)
 let speedfactor = 15;
 let maxspeed = Math.floor(maxrange) + speedfactor * 2;
-let minspeed = speedfactor / 2;
+let minspeed = speedfactor;
 // set radius (pixels)
 let maxradius = 1.3;
 let minradius = 0.3;
@@ -124,7 +123,7 @@ function newObject() {
 			let dist =  Math.sqrt((Math.abs(initx) - Math.abs(c.info.x)) ** 2 + (Math.abs(inity) - Math.abs(c.info.y)) ** 2);
 			if (dist <=  maxrange || (index == pointcount && dist <= 1.5 * maxrange)) {
 				ctx.beginPath();
-				ctx.lineWidth = 0.1;
+				ctx.lineWidth = 0.2;
 				ctx.strokeStyle = "rgb(254, 254, 255)";
 				// makes the cursor's lines more opaque
 				let preDefAlpha = -(dist / maxrange) + 1
