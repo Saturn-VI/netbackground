@@ -3,8 +3,8 @@ container = document.getElementById("background-container");
 canv = document.createElement("canvas");
 canv.id = "background-canvas";
 container.appendChild(canv);
-container.style.height = "100%";
-container.style.width = "100%";
+//container.style.height = "100%";
+//container.style.width = "100%";
 container.style.margin = "0";
 container.style.overflow = "hidden";
 container.style.position = "fixed";
@@ -25,8 +25,8 @@ let points = [];
 // scales points to scale based on pixels on screen
 // stops working after around 5000
 // i'm starting to think that this should have just been square or linear
-// https://www.desmos.com/calculator/xqr2bqh9mq
-let pointcount = Math.round(-0.000000023142 * (((window.screen.height + window.screen.width) / 2) ** 3) + 0.000196988 * (((window.screen.height + window.screen.width) / 2) ** 2) - 0.135206 * ((window.screen.height + window.screen.width) / 2) + 18.5089);
+// https://www.desmos.com/calculator/3kmy8kslk0
+let pointcount = Math.round(-0.0000000064016 * (((window.screen.height + window.screen.width) / 2) ** 3) + 0.0000576403 * (((window.screen.height + window.screen.width) / 2) ** 2) + 0.102593 * ((window.screen.height + window.screen.width) / 2) - 8.03257);
 let mouseX = 0;
 let mouseY = 0;
 
@@ -34,10 +34,8 @@ let mouseY = 0;
 // in ms
 let tickrate = 15;
 // max line draw distance (pixels)
-// only set integer, other math is to scale to speed
-// cursor draws lines an additional 1.5x this range
-// above comments irrelevant, now scales 10% of smallest screen dimension
-let maxrange = (window.screen.height + window.screen.width) / 30;
+// scales 10% of smallest screen dimension
+let maxrange = (window.screen.height < window.screen.width) ? window.screen.height / 10 : window.screen.width / 10;;
 // set speed (pixels / second)
 let speedfactor = 15;
 let maxspeed = Math.floor(maxrange) + speedfactor * 2;
