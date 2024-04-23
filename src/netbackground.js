@@ -3,8 +3,6 @@ container = document.getElementById("background-container");
 canv = document.createElement("canvas");
 canv.id = "background-canvas";
 container.appendChild(canv);
-//container.style.height = "100%";
-//container.style.width = "100%";
 container.style.margin = "0";
 container.style.overflow = "hidden";
 container.style.position = "fixed";
@@ -13,8 +11,8 @@ container.style.left = "0";
 
 const canvas = document.getElementById("background-canvas");
 
-let width = window.screen.width;
-let height = window.screen.height;
+let width = window.innerWidth;
+let height = window.innerHeight;
 let center = (width/2, height/2);
 let ctx = canvas.getContext("2d");
 ctx.canvas.width = window.innerWidth;
@@ -26,19 +24,24 @@ let points = [];
 // stops working after around 5000
 // i'm starting to think that this should have just been square or linear
 // https://www.desmos.com/calculator/3kmy8kslk0
-let pointcount = Math.round(-0.0000000064016 * (((window.screen.height + window.screen.width) / 2) ** 3) + 0.0000576403 * (((window.screen.height + window.screen.width) / 2) ** 2) + 0.102593 * ((window.screen.height + window.screen.width) / 2) - 8.03257);
+let pointcount = Math.round(-0.0000000064016 * (((window.innerHeight + window.innerWidth) / 2) ** 3) + 0.0000576403 * (((window.innerHeight + window.innerWidth) / 2) ** 2) + 0.102593 * ((window.innerHeight + window.innerWidth) / 2) - 8.03257);
 let mouseX = 0;
 let mouseY = 0;
+
+// quick fix that disables net if prefers-reduced-motion is on
+if (window.matchMedia(`(prefers-reduced-motion: reduce)`) === true || window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true) {
+	pointcount = 0;
+}
 
 // customizable values
 // in ms
 let tickrate = 15;
 // max line draw distance (pixels)
 // scales 10% of smallest screen dimension
-let maxrange = (window.screen.height < window.screen.width) ? window.screen.height / 10 : window.screen.width / 10;;
+let maxrange = (window.innerHeight < window.innerWidth) ? window.innerHeight / 10 : window.innerWidth / 10;;
 // set speed (pixels / second)
 let speedfactor = 15;
-let maxspeed = Math.floor(maxrange) + speedfactor * 2;
+let maxspeed = Math.floor(maxrange) + speedfactor * 5;
 let minspeed = speedfactor;
 // set radius (pixels)
 let maxradius = 1.3;
@@ -49,8 +52,8 @@ function randomNumber(min, max) {
 };
 
 onresize = (event) => {
-	width = window.screen.width;
-	height = window.screen.height;
+	width = window.innerWidth;
+	height = window.innerHeight;
 	center = (width/2, height/2);
 	ctx.canvas.width = window.innerWidth;
 	ctx.canvas.height = window.innerHeight;
@@ -119,14 +122,14 @@ function newObject() {
 		points[pointcount].info.y = mouseY;
 		points.forEach(function(c, index){
 			let dist =  Math.sqrt((Math.abs(initx) - Math.abs(c.info.x)) ** 2 + (Math.abs(inity) - Math.abs(c.info.y)) ** 2);
-			if (dist <=  maxrange || (index == pointcount && dist <= 1.5 * maxrange)) {
+			if (dist <=  maxrange || (index == pointcount && dist <= 1.6 * maxrange)) {
 				ctx.beginPath();
 				ctx.lineWidth = 0.2;
 				ctx.strokeStyle = "rgb(254, 254, 255)";
 				// makes the cursor's lines more opaque
 				let preDefAlpha = -(dist / maxrange) + 1
 				if (index == pointcount) {
-					preDefAlpha += 0.5;
+					preDefAlpha += 0.6;
 				};
 				ctx.globalAlpha = Math.max(0, Math.min(1, (preDefAlpha)));
 				ctx.moveTo(initx, inity);
@@ -150,14 +153,16 @@ function logKey(e) {
 }
 
 document.addEventListener("click", (e) => {
-	pointcount += 5;
-	for (i = pointcount - 5; i < pointcount; i++) {	
-		points[i] = new newObject();
-		points[i].initpoint();
-		points[i].info.x = mouseX;
-		points[i].info.y = mouseY;
+	if (window.matchMedia(`(prefers-reduced-motion: reduce)`) === false || window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === false) {
+		pointcount += 5;
+		for (i = pointcount - 5; i < pointcount; i++) {
+			points[i] = new newObject();
+			points[i].initpoint();
+			points[i].info.x = mouseX;
+			points[i].info.y = mouseY;
+		}
+		initMouseLoc();
 	}
-	initMouseLoc();
 });
 
 // reinitialize mouse in array at end after click
