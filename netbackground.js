@@ -25,8 +25,8 @@ let points = [];
 // scales points to scale based on pixels on screen
 // stops working after around 5000
 // i'm starting to think that this should have just been square or linear
-// https://www.desmos.com/calculator/osywnwrize
-let pointcount = Math.round(-0.000000049801 * (((window.screen.height + window.screen.width) / 2) ** 3) + 0.000283441 * (((window.screen.height + window.screen.width) / 2) ** 2) - 0.0611136 * ((window.screen.height + window.screen.width) / 2) + 1.82922);
+// https://www.desmos.com/calculator/xqr2bqh9mq
+let pointcount = Math.round(-0.000000023142 * (((window.screen.height + window.screen.width) / 2) ** 3) + 0.000196988 * (((window.screen.height + window.screen.width) / 2) ** 2) - 0.135206 * ((window.screen.height + window.screen.width) / 2) + 18.5089);
 let mouseX = 0;
 let mouseY = 0;
 
@@ -37,11 +37,12 @@ let tickrate = 15;
 // only set integer, other math is to scale to speed
 // cursor draws lines an additional 1.5x this range
 // above comments irrelevant, now scales 10% of smallest screen dimension
-let maxrange = (window.screen.height < window.screen.width) ? window.screen.height / 10 : window.screen.width / 10;
+//let maxrange = (window.screen.height < window.screen.width) ? window.screen.height / 10 : window.screen.width / 10;
+let maxrange = (window.screen.height + window.screen.width) / 30;
 // set speed (pixels / second)
 let speedfactor = 15;
-let maxspeed = Math.floor(maxrange) + speedfactor;
-let minspeed = speedfactor;
+let maxspeed = Math.floor(maxrange) + speedfactor * 2;
+let minspeed = speedfactor / 2;
 // set radius (pixels)
 let maxradius = 1.3;
 let minradius = 0.3;
@@ -89,7 +90,7 @@ function newObject() {
 
 	this.update = function() {
 		// set out of bounds to add maxrange to improve smoothness
-		if (this.info.x > width + maxrange / 2 || this.info.x < 0 - maxrange / 2 || this.info.y > height + maxrange / 2 || this.info.y < 0 - maxrange / 2) {
+		if (this.info.x > width || this.info.x < 0 || this.info.y > height  || this.info.y < 0) {
 			this.initpoint()
 		}
 		// ticks per second
@@ -123,7 +124,7 @@ function newObject() {
 			let dist =  Math.sqrt((Math.abs(initx) - Math.abs(c.info.x)) ** 2 + (Math.abs(inity) - Math.abs(c.info.y)) ** 2);
 			if (dist <=  maxrange || (index == pointcount && dist <= 1.5 * maxrange)) {
 				ctx.beginPath();
-				ctx.lineWidth = 0.2;
+				ctx.lineWidth = 0.1;
 				ctx.strokeStyle = "rgb(254, 254, 255)";
 				// makes the cursor's lines more opaque
 				let preDefAlpha = -(dist / maxrange) + 1

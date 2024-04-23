@@ -9,4 +9,5 @@ it ~~mostly~~ just looks fancy
 - number of points, maximum draw range, and (kind of) speed
 
 ## todo
-- scale radius
+- make alpha curve reverse logarithmic
+- fix the lines and circles so they aren't so blurry (top priority)
