@@ -16,3 +16,6 @@ it ~~mostly~~ just looks fancy
 ```
 $ node server
 ```
+## if you want to run it on an actual site
+- add `<script src="netbackground.js" defer></script>` to `<head>`
+- add `<container id="background-container"></container>` to the start of `<body>`
