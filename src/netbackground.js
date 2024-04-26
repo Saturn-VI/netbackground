@@ -92,13 +92,13 @@ function dot() {
 	};
 
 	this.draw = function() {
-        ctx.beginPath();
-        ctx.arc(this.info.x, this.info.y, this.info.radius, 0, 2*Math.PI, false);
-        ctx.lineWidth = this.info.radius * 2;
+		ctx.beginPath();
+		ctx.arc(this.info.x, this.info.y, this.info.radius, 0, 2*Math.PI, false);
+		ctx.lineWidth = this.info.radius * 2;
 		ctx.globalAlpha = 1;
-        ctx.fillStyle = "rgb(162, 162, 163)";
-        ctx.strokeStyle = "rgb(162, 162, 163)";
-        ctx.stroke();
+		ctx.fillStyle = "rgb(162, 162, 163)";
+		ctx.strokeStyle = "rgb(162, 162, 163)";
+		ctx.stroke();
 		ctx.fill();
 	};
 
