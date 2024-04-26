@@ -5,10 +5,10 @@ it ~~mostly~~ just looks fancy
 - it automatically styles and sets up a container if it has the id 'background-container'
 - it treats your cursor as a point and makes it stronger (pretty much a given)
 - particles spawn at the cursor when mouse is clicked
-- number of points, maximum draw range, and (kind of) speed scale
+- number of points, maximum draw range, and speed scale (pretty well, at that: pointcount uses regressions and draw distance/speed scale with the canvas size anyways)
 
 ## todo
-- make alpha curve a bezier or something like that
+- at this point there isn't really anything left to do that's worth the time, so it could be considered done
 
 ## running
 ```

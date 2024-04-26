@@ -1,6 +1,6 @@
 // spaghetthi that sets up page
-let width = window.innerWidth;
-let height = window.innerHeight;
+let width = window.screen.width;
+let height = window.screen.height;
 let center = (width/2, height/2);
 
 // style and create container for canvas
@@ -21,16 +21,14 @@ let dpr = window.devicePixelRatio || 1;
 ctx.canvas.width = width * dpr;
 ctx.canvas.height = height * dpr;
 ctx.canvas.style.background = "rgb(27, 27, 30)";
-// ctx.canvas.style.background = "rgb(0, 0, 0)";
-let points = [];	
-
 ctx.imageSmoothingEnabled = true;
+let points = [];
 
-// scales points to scale based on pixels on screen
-// stops working after around 5000
+// scales points to scale based on average dimensions of screen
+// stops working after around 10000
 // i'm starting to think that this should have just been square or linear
-// https://www.desmos.com/calculator/3kmy8kslk0
-let pointcount = Math.round(-0.0000000064016 * (((window.innerHeight + window.innerWidth) / 2) ** 3) + 0.0000576403 * (((window.innerHeight + window.innerWidth) / 2) ** 2) + 0.102593 * ((window.innerHeight + window.innerWidth) / 2) - 8.03257);
+// https://www.desmos.com/calculator/dcrnwgb2ju
+let pointcount = Math.round(-0.0000062638 * (((canvas.width + canvas.height) / (2 * dpr)) ** 2) + 0.159716 * ((canvas.width + canvas.height) / (2 * dpr)) + 13.4925);
 let mouseX = 0;
 let mouseY = 0;
 
@@ -43,8 +41,8 @@ if (window.matchMedia(`(prefers-reduced-motion: reduce)`) === true || window.mat
 // in ms
 let tickrate = 15;
 // max line draw distance (pixels)
-// scales 10% of smallest screen dimension
-let maxrange = (window.innerHeight < window.innerWidth) ? window.innerHeight / 10 : window.innerWidth / 10;;
+// does not scale because it is relative to canvas + dpr
+let maxrange = 110;
 // set speed (pixels / second)
 let speedfactor = 15;
 let maxspeed = Math.floor(maxrange) + speedfactor * 5;
@@ -63,6 +61,16 @@ onresize = (event) => {
 	center = (width/2, height/2);
 	ctx.canvas.width = window.innerWidth * dpr;
 	ctx.canvas.height = window.innerHeight * dpr;
+
+	pointcount = Math.round(-0.0000062638 * (((canvas.width + canvas.height) / (2 * dpr)) ** 2) + 0.159716 * ((canvas.width + canvas.height) / (2 * dpr)) + 13.4925);
+	if (window.matchMedia(`(prefers-reduced-motion: reduce)`) === false || window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === false) {
+		points = [];
+		for (i = 0; i < pointcount; i++) {
+			points[i] = new newObject();
+			points[i].initpoint();
+		};
+		initMouseLoc();
+	};
 };
 
 function newObject() {
@@ -73,8 +81,8 @@ function newObject() {
 	let y = 0;
 	// starting location of dot
 	this.initpoint = function() {
-		this.info.x = randomNumber(0, width);
-		this.info.y = randomNumber(0, height);
+		this.info.x = randomNumber(0, ctx.canvas.width);
+		this.info.y = randomNumber(0, ctx.canvas.height);
 		this.info.angle = randomNumber(1, 360);
 
 		// speed stuff is defined here, radius is a linear regression that has minimum/maximum speed as x and desired radius as y
@@ -146,7 +154,7 @@ function newObject() {
 	}
 }
 
-for (i = 0; i<pointcount; i++) {
+for (i = 0; i < pointcount; i++) {
     points[i] = new newObject();
 	points[i].initpoint();
 }
