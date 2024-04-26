@@ -73,7 +73,7 @@ onresize = (event) => {
 	};
 };
 
-function newObject() {
+function dot() {
 	// init variables (code 100% not stolen from previous thing)
 	this.info = [];
 	this.neightbors = [];
@@ -89,7 +89,7 @@ function newObject() {
 		this.info.speed = randomNumber(minspeed, maxspeed);
 		// magical sauce that scales radius linearly based on speed;
 		this.info.radius = (maxradius - minradius) * ((this.info.speed - minspeed) / (maxspeed - minspeed)) + minradius;
-	}
+	};
 
 	this.draw = function() {
         ctx.beginPath();
@@ -100,13 +100,13 @@ function newObject() {
         ctx.strokeStyle = "rgb(162, 162, 163)";
         ctx.stroke();
 		ctx.fill();
-    }
+	};
 
 	this.update = function() {
 		// set out of bounds to add maxrange to improve smoothness
 		if (this.info.x > width || this.info.x < 0 || this.info.y > height  || this.info.y < 0) {
 			this.initpoint()
-		}
+		};
 		// ticks per second
 		let tps = tickrate / 1000
 		// Man idk what i'm doing idk trig
@@ -126,8 +126,8 @@ function newObject() {
 			// neg y neg x
           	this.info.x += (-this.info.speed * Math.cos(Math.abs(this.info.angle))) * tps;
 			this.info.y += (-this.info.speed * Math.sin(Math.abs(this.info.angle))) * tps;
-		}
-	}
+		};
+	};
 
 	this.net = function() {
 		let initx = this.info.x;
@@ -149,13 +149,13 @@ function newObject() {
 				ctx.moveTo(initx, inity);
 				ctx.lineTo(c.info.x, c.info.y);
 				ctx.stroke();
-			}
+			};
 		});
-	}
-}
+	};
+};
 
 for (i = 0; i < pointcount; i++) {
-    points[i] = new newObject();
+    points[i] = new dot();
 	points[i].initpoint();
 }
 
@@ -170,7 +170,7 @@ document.addEventListener("click", (e) => {
 	if (window.matchMedia(`(prefers-reduced-motion: reduce)`) === false || window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === false) {
 		pointcount += 5;
 		for (i = pointcount - 5; i < pointcount; i++) {
-			points[i] = new newObject();
+			points[i] = new dot();
 			points[i].initpoint();
 			points[i].info.x = mouseX;
 			points[i].info.y = mouseY;
@@ -181,7 +181,7 @@ document.addEventListener("click", (e) => {
 
 // reinitialize mouse in array at end after click
 function initMouseLoc() {	
-	points[pointcount] = new newObject();
+	points[pointcount] = new dot();
 	points[pointcount].info.x = mouseX;
 	points[pointcount].info.y = mouseY;
 };
