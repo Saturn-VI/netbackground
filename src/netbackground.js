@@ -1,24 +1,30 @@
 // spaghetthi that sets up page
+let width = window.innerWidth;
+let height = window.innerHeight;
+let center = (width/2, height/2);
+
+// style and create container for canvas
 container = document.getElementById("background-container");
-canv = document.createElement("canvas");
-canv.id = "background-canvas";
-container.appendChild(canv);
+c = document.createElement("canvas");
+c.id = "background-canvas";
+container.appendChild(c);
 container.style.margin = "0";
 container.style.overflow = "hidden";
 container.style.position = "fixed";
 container.style.top = "0";
 container.style.left = "0";
 
+// canvas context
 const canvas = document.getElementById("background-canvas");
-
-let width = window.innerWidth;
-let height = window.innerHeight;
-let center = (width/2, height/2);
 let ctx = canvas.getContext("2d");
-ctx.canvas.width = window.innerWidth;
-ctx.canvas.height = window.innerHeight;
+let dpr = window.devicePixelRatio || 1;
+ctx.canvas.width = width * dpr;
+ctx.canvas.height = height * dpr;
 ctx.canvas.style.background = "rgb(27, 27, 30)";
-let points = [];
+// ctx.canvas.style.background = "rgb(0, 0, 0)";
+let points = [];	
+
+ctx.imageSmoothingEnabled = true;
 
 // scales points to scale based on pixels on screen
 // stops working after around 5000
@@ -55,8 +61,8 @@ onresize = (event) => {
 	width = window.innerWidth;
 	height = window.innerHeight;
 	center = (width/2, height/2);
-	ctx.canvas.width = window.innerWidth;
-	ctx.canvas.height = window.innerHeight;
+	ctx.canvas.width = window.innerWidth * dpr;
+	ctx.canvas.height = window.innerHeight * dpr;
 };
 
 function newObject() {
@@ -124,7 +130,7 @@ function newObject() {
 			let dist =  Math.sqrt((Math.abs(initx) - Math.abs(c.info.x)) ** 2 + (Math.abs(inity) - Math.abs(c.info.y)) ** 2);
 			if (dist <=  maxrange || (index == pointcount && dist <= 1.6 * maxrange)) {
 				ctx.beginPath();
-				ctx.lineWidth = 0.2;
+				ctx.lineWidth = 0.8;
 				ctx.strokeStyle = "rgb(254, 254, 255)";
 				// makes the cursor's lines more opaque
 				let preDefAlpha = -(dist / maxrange) + 1
