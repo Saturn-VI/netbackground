@@ -54,8 +54,8 @@ let maxspeed = Math.floor(maxrange) + speedfactor * 5;
 let minspeed = speedfactor;
 
 // set radius (pixels)
-let maxradius = 1.3;
-let minradius = 0.3;
+let maxradius = 2;
+let minradius = 0.5;
 
 function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
@@ -100,6 +100,7 @@ function dot() {
 	};
 
 	this.draw = function() {
+		ctx.moveTo(this.x, this.y);
 		ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI, false);
 	};
 
