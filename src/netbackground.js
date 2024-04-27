@@ -40,13 +40,19 @@ if (window.matchMedia(`(prefers-reduced-motion: reduce)`) === true || window.mat
 // customizable values
 // in ms
 let tickrate = 15;
+
+// ticks per second
+let tps = tickrate / 1000
+
 // max line draw distance (pixels)
 // does not scale because it is relative to canvas + dpr
-let maxrange = 110;
+let maxrange = 100;
+
 // set speed (pixels / second)
 let speedfactor = 15;
-let maxspeed = Math.floor(maxrange) + speedfactor * 5;
+let maxspeed = Math.floor(maxrange) + speedfactor * 10;
 let minspeed = speedfactor;
+
 // set radius (pixels)
 let maxradius = 1.3;
 let minradius = 0.3;
@@ -66,7 +72,7 @@ onresize = (event) => {
 	if (window.matchMedia(`(prefers-reduced-motion: reduce)`) === false || window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === false) {
 		points = [];
 		for (i = 0; i < pointcount; i++) {
-			points[i] = new newObject();
+			points[i] = new dot();
 			points[i].initpoint();
 		};
 		initMouseLoc();
@@ -75,26 +81,28 @@ onresize = (event) => {
 
 function dot() {
 	// init variables (code 100% not stolen from previous thing)
-	this.info = [];
 	this.neightbors = [];
 	let x = 0;
 	let y = 0;
 	// starting location of dot
 	this.initpoint = function() {
-		this.info.x = randomNumber(0, ctx.canvas.width);
-		this.info.y = randomNumber(0, ctx.canvas.height);
-		this.info.angle = randomNumber(1, 360);
+		this.x = randomNumber(0, ctx.canvas.width);
+		this.y = randomNumber(0, ctx.canvas.height);
+		this.angle = randomNumber(1, 360);
 
 		// speed stuff is defined here, radius is a linear regression that has minimum/maximum speed as x and desired radius as y
-		this.info.speed = randomNumber(minspeed, maxspeed);
+		this.speed = randomNumber(minspeed, maxspeed);
 		// magical sauce that scales radius linearly based on speed;
-		this.info.radius = (maxradius - minradius) * ((this.info.speed - minspeed) / (maxspeed - minspeed)) + minradius;
+		this.radius = (maxradius - minradius) * ((this.speed - minspeed) / (maxspeed - minspeed)) + minradius;
+
+		this.dx = this.speed * tps * Math.cos(this.angle);
+		this.dy = this.speed * tps * Math.sin(this.angle);
 	};
 
 	this.draw = function() {
 		ctx.beginPath();
-		ctx.arc(this.info.x, this.info.y, this.info.radius, 0, 2*Math.PI, false);
-		ctx.lineWidth = this.info.radius * 2;
+		ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI, false);
+		ctx.lineWidth = this.radius * 2;
 		ctx.globalAlpha = 1;
 		ctx.fillStyle = "rgb(162, 162, 163)";
 		ctx.strokeStyle = "rgb(162, 162, 163)";
@@ -104,53 +112,52 @@ function dot() {
 
 	this.update = function() {
 		// set out of bounds to add maxrange to improve smoothness
-		if (this.info.x > width || this.info.x < 0 || this.info.y > height  || this.info.y < 0) {
+		if (this.x > width || this.x < 0 || this.y > height  || this.y < 0) {
 			this.initpoint()
 		};
-		// ticks per second
-		let tps = tickrate / 1000
-		// Man idk what i'm doing idk trig
-		if (0 <= this.info.angle && 90 > this.info.angle) {
-			// neg y pos x
-			this.info.x += (this.info.speed * Math.cos(Math.abs(this.info.angle))) * tps;
-			this.info.y += (-this.info.speed * Math.sin(Math.abs(this.info.angle))) * tps;
-		} else if (90 <= this.info.angle && 180 > this.info.angle) {
-			// pos y pos x
-			this.info.x += (this.info.speed * Math.cos(Math.abs(this.info.angle))) * tps;
-			this.info.y += (this.info.speed * Math.sin(Math.abs(this.info.angle))) * tps;
-		} else if (180 <= this.info.angle && 270 > this.info.angle) {
-			// pos y neg x
-			this.info.x += (-this.info.speed * Math.cos(Math.abs(this.info.angle))) * tps;
-			this.info.y += (this.info.speed * Math.sin(Math.abs(this.info.angle))) * tps;
-		} else if (270 <= this.info.angle && 360 >= this.info.angle) {
-			// neg y neg x
-          	this.info.x += (-this.info.speed * Math.cos(Math.abs(this.info.angle))) * tps;
-			this.info.y += (-this.info.speed * Math.sin(Math.abs(this.info.angle))) * tps;
-		};
+
+		// The last version of this was way too complicated jeez
+		this.x += this.dx;
+		this.y += this.dy;
 	};
 
 	this.net = function() {
-		let initx = this.info.x;
-		let inity = this.info.y;
-		points[pointcount].info.x = mouseX;
-		points[pointcount].info.y = mouseY;
-		points.forEach(function(c, index){
-			let dist =  Math.sqrt((Math.abs(initx) - Math.abs(c.info.x)) ** 2 + (Math.abs(inity) - Math.abs(c.info.y)) ** 2);
+		let initx = this.x;
+		let inity = this.y;
+		let floorinitx = Math.floor(initx);
+		let floorinity = Math.floor(inity);
+
+		points[pointcount].x = mouseX;
+		points[pointcount].y = mouseY;
+
+		ctx.lineWidth = 0.8 * dpr;
+
+		points.forEach(function(c, index) {
+			let newpointx = c.x;
+			let newpointy = c.y;
+			let floornewpointx = Math.floor(c.x);
+			let floornewpointy = Math.floor(c.y);
+
+
+			let dist =  Math.sqrt((initx - newpointx) ** 2 + (inity - newpointy) ** 2);
 			if (dist <=  maxrange || (index == pointcount && dist <= 1.6 * maxrange)) {
+
 				ctx.beginPath();
-				ctx.lineWidth = 0.8;
-				ctx.strokeStyle = "rgb(254, 254, 255)";
+
 				// makes the cursor's lines more opaque
-				let preDefAlpha = -(dist / maxrange) + 1
+				let preDefAlpha = 1 - (dist / maxrange);
 				if (index == pointcount) {
 					preDefAlpha += 0.6;
 				};
-				ctx.globalAlpha = Math.max(0, Math.min(1, (preDefAlpha)));
+				alpha = Math.max(0, Math.min(1, (preDefAlpha)));
+
+				ctx.strokeStyle = `rgb(254, 254, 255, ${alpha})`;
+
 				ctx.moveTo(initx, inity);
-				ctx.lineTo(c.info.x, c.info.y);
+				ctx.lineTo(newpointx, newpointy);
 				ctx.stroke();
-			};
-		});
+			}; // draw line
+		}); // point iteration
 	};
 };
 
@@ -172,8 +179,8 @@ document.addEventListener("click", (e) => {
 		for (i = pointcount - 5; i < pointcount; i++) {
 			points[i] = new dot();
 			points[i].initpoint();
-			points[i].info.x = mouseX;
-			points[i].info.y = mouseY;
+			points[i].x = mouseX;
+			points[i].y = mouseY;
 		}
 		initMouseLoc();
 	}
@@ -182,8 +189,8 @@ document.addEventListener("click", (e) => {
 // reinitialize mouse in array at end after click
 function initMouseLoc() {	
 	points[pointcount] = new dot();
-	points[pointcount].info.x = mouseX;
-	points[pointcount].info.y = mouseY;
+	points[pointcount].x = mouseX;
+	points[pointcount].y = mouseY;
 };
 
 initMouseLoc();
