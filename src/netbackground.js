@@ -100,14 +100,7 @@ function dot() {
 	};
 
 	this.draw = function() {
-		ctx.beginPath();
 		ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI, false);
-		ctx.lineWidth = this.radius * 2;
-		ctx.globalAlpha = 1;
-		ctx.fillStyle = "rgb(162, 162, 163)";
-		ctx.strokeStyle = "rgb(162, 162, 163)";
-		ctx.stroke();
-		ctx.fill();
 	};
 
 	this.update = function() {
@@ -196,11 +189,17 @@ function initMouseLoc() {
 initMouseLoc();
 
 setInterval(function() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-   	points.forEach(function(b) {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	
+	ctx.beginPath();
+	ctx.fillStyle = "rgb(162, 162, 163)";
+	ctx.strokeStyle = "rgb(162, 162, 163)";
+	points.forEach(function(b) {
         b.update();
         b.draw();
     });
+	ctx.fill();
+
 	// for the actual lines
 	points.forEach(function(d) {
 		d.net()
