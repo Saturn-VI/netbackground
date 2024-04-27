@@ -50,7 +50,7 @@ let maxrange = 100;
 
 // set speed (pixels / second)
 let speedfactor = 15;
-let maxspeed = Math.floor(maxrange) + speedfactor * 10;
+let maxspeed = Math.floor(maxrange) + speedfactor * 5;
 let minspeed = speedfactor;
 
 // set radius (pixels)
